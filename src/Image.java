@@ -34,13 +34,13 @@ public class Image {
         return fileContent.toString();
     }
 
-    private String[] tokenize(String input)
+    private String[] tokenize(String str)
     {
         String[] infos = {"", "", "", "", ""};
         int counter = 0;
         Pattern name = Pattern.compile("([Pp])[0-9]+");
         Pattern number = Pattern.compile("[0-9]+");
-        StringTokenizer st = new StringTokenizer(input);
+        StringTokenizer st = new StringTokenizer(str);
         while(st.hasMoreTokens())
         {
             String token = st.nextToken();
