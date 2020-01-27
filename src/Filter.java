@@ -1,6 +1,6 @@
 public class Filter {
 
-    public int[][] filter;
+    protected final int[][] filter;
 
     public Filter(int[] arr)
     {
@@ -12,10 +12,7 @@ public class Filter {
         int[][] matrix = new int[3][3];
         for(int i = 0; i < 3; i++)
         {
-            for(int j = 0; j < 3; j++)
-            {
-                matrix[i][j] = arr[j + i * 3];
-            }
+            System.arraycopy(arr, i * 3, matrix[i], 0, 3);
         }
         return matrix;
     }

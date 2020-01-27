@@ -2,12 +2,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Image {
 
-    private String name;
-    private String comment;
+    protected String filename;
+    protected String name;
+    protected String comment;
     protected int x;
     protected int y;
     protected int[][] pixels;
@@ -15,11 +17,23 @@ public class Image {
     public Image(String filename) throws IOException
     {
         String[] imageProperties = tokenize(readFile(filename));
+        this.filename = getFilename(filename);
         this.name = imageProperties[0];
         this.comment = imageProperties[1];
         this.x = Integer.parseInt(imageProperties[2]);
         this.y = Integer.parseInt(imageProperties[3]);
         this.pixels = createPixelsMatrix(imageProperties[4]);
+    }
+
+    private String getFilename(String filename)
+    {
+        Pattern p = Pattern.compile("(.*)\\.[^.]+$");
+        Matcher matcher = p.matcher(filename);
+        if(matcher.find())
+        {
+            return "_" + matcher.group(1);
+        }
+        else return "image";
     }
 
     private String readFile(String filename) throws IOException

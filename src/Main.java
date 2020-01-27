@@ -6,11 +6,11 @@ public class Main {
     {
         Image img = new Image("j.pbm");
         img.printImageProperties();
-        int[] arr = {1, 0, 1,
-                     0, 1, 0,
-                     1, 0, 1};
+        int[] arr = {1, 0, 0,
+                     0, 0, 0,
+                     0, 0, 0};
         Filter filter = new Filter(arr);
         ConvolutionFiltering cf1 = new ConvolutionFiltering(img, filter);
-        cf1.Corners();
+        cf1.filter();
     }
 }
