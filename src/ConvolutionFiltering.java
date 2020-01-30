@@ -128,7 +128,7 @@ public class ConvolutionFiltering {
 
     private void saveImage() throws FileNotFoundException, UnsupportedEncodingException
     {
-        PrintWriter writer = new PrintWriter("files/filtered" + img.filename + ".pbm", "UTF-8");
+        PrintWriter writer = new PrintWriter("files/filtered" + img.fileName + ".pbm", "UTF-8");
         writer.println(img.name);
         writer.println("# Filtered image");
         writer.println(img.x + " " + img.y);

@@ -7,9 +7,11 @@ import java.util.regex.Pattern;
 
 public class Image {
 
-    protected String filename;
+    protected String fileName;
+    protected String fileExtension;
     protected String name;
     protected String comment;
+    protected int maxPixelValue;
     protected int x;
     protected int y;
     protected int[][] pixels;
@@ -17,7 +19,7 @@ public class Image {
     public Image(String filename) throws IOException
     {
         String[] imageProperties = tokenize(readFile(filename));
-        this.filename = getFilename(filename);
+        this.fileName = getFilename(filename);
         this.name = imageProperties[0];
         this.comment = imageProperties[1];
         this.x = Integer.parseInt(imageProperties[2]);
@@ -53,6 +55,13 @@ public class Image {
         String[] infos = {"", "", "", "", ""};
         int counter = 0;
         Pattern name = Pattern.compile("([Pp])[0-9]+");
+        Pattern comment = Pattern.compile("^#(.+)$");
+        Matcher matcher = comment.matcher(str);
+        if(matcher.find())
+        {
+            System.out.println(matcher.group(0));
+        }
+
         Pattern number = Pattern.compile("[0-9]+");
         StringTokenizer st = new StringTokenizer(str);
         while(st.hasMoreTokens())
