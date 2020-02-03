@@ -10,7 +10,7 @@ public class Main {
                      1, 1, 1,
                      1, 1, 1};
         Filter filter = new Filter(arr);
-        ConvolutionFiltering cf1 = new ConvolutionFiltering(img, filter);
-        cf1.filter();
+        //ConvolutionFiltering cf1 = new ConvolutionFiltering(img, filter);
+        //cf1.filter();
     }
 }
