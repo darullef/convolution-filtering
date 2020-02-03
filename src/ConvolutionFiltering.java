@@ -92,13 +92,14 @@ public class ConvolutionFiltering {
         {
             for(int j = 0; j < 3; j++)
             {
-                if(filter.filter[i][j] == 1)
-                {
-                    sum += arr[i][j];
-                }
+                sum += filter.filter[i][j] * arr[i][j];
             }
         }
-        return sum;
+        if(img.maxPixelValue != 0 && sum > img.maxPixelValue)
+        {
+            return img.maxPixelValue;
+        }
+        else return sum;
     }
 
     public void filter() throws FileNotFoundException, UnsupportedEncodingException
@@ -113,7 +114,12 @@ public class ConvolutionFiltering {
                 filteredImage[j][i] = getNewValue(getSquare(j, i));
             }
         }
+        //print();
+        saveImage();
+    }
 
+    private void print()
+    {
         System.out.println("Result of filtering:");
         for(int i = 0; i < img.y; i++)
         {
@@ -123,12 +129,11 @@ public class ConvolutionFiltering {
             }
             System.out.println();
         }
-        saveImage();
     }
 
     private void saveImage() throws FileNotFoundException, UnsupportedEncodingException
     {
-        PrintWriter writer = new PrintWriter("files/filtered" + img.fileName + ".pbm", "UTF-8");
+        PrintWriter writer = new PrintWriter("files/filtered_" + img.fileName + img.fileExtension, "UTF-8");
         writer.println(img.imageType);
         writer.println("# Filtered image");
         writer.println(img.x + " " + img.y);
@@ -141,5 +146,6 @@ public class ConvolutionFiltering {
             writer.println();
         }
         writer.close();
+        System.out.println("Result saved to file!");
     }
 }
