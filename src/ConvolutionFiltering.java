@@ -87,19 +87,19 @@ public class ConvolutionFiltering {
 
     private int getNewValue(int[][] arr)
     {
-        int sum = 0;
+        int value = 0;
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 3; j++)
             {
-                sum += filter.filter[i][j] * arr[i][j];
+                value += filter.filter[i][j] * arr[i][j];
             }
         }
-        if(img.maxPixelValue != 0 && sum > img.maxPixelValue)
+        if(img.maxPixelValue != 0 && value > img.maxPixelValue)
         {
             return img.maxPixelValue;
         }
-        else return sum;
+        else return value;
     }
 
     public void filter() throws FileNotFoundException, UnsupportedEncodingException
@@ -114,11 +114,11 @@ public class ConvolutionFiltering {
                 filteredImage[j][i] = getNewValue(getSquare(j, i));
             }
         }
-        //print();
+        //printResult();
         saveImage();
     }
 
-    private void print()
+    private void printResult()
     {
         System.out.println("Result of filtering:");
         for(int i = 0; i < img.y; i++)

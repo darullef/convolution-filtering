@@ -117,10 +117,11 @@ public class Image {
 
     public void printImageProperties()
     {
-        System.out.println(fileName + fileExtension);
-        System.out.println(imageType);
-        System.out.println(comment);
+        System.out.println("file: " + fileName + fileExtension);
+        System.out.println("image type: " + imageType);
+        System.out.println("comment: " + comment);
         System.out.println("x: " + x + ", y: " + y);
+        System.out.println("max pixel value: " + maxPixelValue);
         for(int i = 0; i < this.y; i++)
         {
             for(int j = 0; j < this.x; j++)
