@@ -1,31 +1,47 @@
 public class Filter {
 
-    protected final int[][] filter;
+    public enum filterType {IDENTITY, LIGHT_OUTLINE, OUTLINE, STRONG_OUTLINE, SHARPEN, BLUR, EMBOSS}
+    protected double[][] filter;
 
-    public Filter(int[] arr)
+    public Filter(filterType f)
     {
-        this.filter = createFilter(arr);
-    }
-
-    private int[][] createFilter(int[] arr)
-    {
-        int[][] matrix = new int[3][3];
-        for(int i = 0; i < 3; i++)
+        switch (f)
         {
-            System.arraycopy(arr, i * 3, matrix[i], 0, 3);
-        }
-        return matrix;
-    }
-
-    public void printFilter()
-    {
-        for(int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                System.out.print(this.filter[i][j] + " ");
-            }
-            System.out.println();
+            case LIGHT_OUTLINE:
+                this.filter = new double[][]{{1, 0, -1},
+                                             {0, 0, 0},
+                                             {-1, 0, 1}};
+                break;
+            case OUTLINE:
+                this.filter = new double[][]{{0, 1, 0},
+                                             {1, -4, 1},
+                                             {0, 1, 0}};
+                break;
+            case STRONG_OUTLINE:
+                this.filter = new double[][]{{-1, -1, -1},
+                                             {-1, 8, -1},
+                                             {-1, -1, -1}};
+                break;
+            case SHARPEN:
+                this.filter = new double[][]{{0, -1, 0},
+                                             {-1, 5, -1},
+                                             {0, -1, 0}};
+                break;
+            case BLUR:
+                this.filter = new double[][]{{0.0625, 0.125, 0.0625},
+                                             {0.125, 0.25, 0.125},
+                                             {0.0625, 0.125, 0.0625}};
+                break;
+            case EMBOSS:
+                this.filter = new double[][]{{-2, -1, 0},
+                                             {-1, 1, 1},
+                                             {0, 1, 2}};
+                break;
+            case IDENTITY:
+            default:
+                this.filter = new double[][]{{0, 0, 0},
+                                             {0, 1, 0},
+                                             {0, 0, 0}};
         }
     }
 }

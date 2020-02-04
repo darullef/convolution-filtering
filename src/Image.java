@@ -1,5 +1,7 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,23 +10,46 @@ public class Image {
     protected String fileName;
     protected String fileExtension;
     protected String imageType;
-    protected String comment;
     protected int maxPixelValue;
     protected int x;
     protected int y;
     protected int[][] pixels;
 
-    public Image(String filename) throws IOException
+    public Image(String filename)
     {
-        String[] imageProperties = read(filename);
         this.fileName = getFilename(filename);
         this.fileExtension = getFileExtension(filename);
-        this.imageType = imageProperties[0];
-        this.comment = imageProperties[1];
-        this.x = Integer.parseInt(imageProperties[2]);
-        this.y = Integer.parseInt(imageProperties[3]);
-        this.maxPixelValue = Integer.parseInt(imageProperties[4]);
-        this.pixels = createPixelsMatrix(imageProperties[5]);
+        this.imageType = "P1";
+        this.x = 0;
+        this.y = 0;
+        this.maxPixelValue = 1;
+        this.pixels = new int[0][0];
+        try {
+            tokenize(readFile(filename));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error while reading file!");
+        }
+    }
+
+    private String readFile(String filename)
+    {
+        StringBuilder fileContent = new StringBuilder();
+        File file = new File("files/" + filename);
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("File not found!");
+        }
+        if (scanner != null) {
+            while (scanner.hasNextLine())
+            {
+                fileContent.append(scanner.nextLine()).append("\n");
+            }
+        }
+        return fileContent.toString();
     }
 
     private String getFilename(String filename)
@@ -49,86 +74,49 @@ public class Image {
         else return ".txt";
     }
 
-    private String[] read(String filename) throws FileNotFoundException
+    private String nextToken(StringTokenizer st, Pattern p) throws Exception
     {
-        String[] infos = {/* imageType */ "",
-                          /* comment */ "",
-                          /* x */ "",
-                          /* y */ "",
-                          /* maxPixelValue */ "0",
-                          /* pixels */ ""};
-        int counter = 0;
-        File file = new File("files/" + filename);
-        Scanner scanner = new Scanner(file);
-        while(scanner.hasNextLine())
+        if(st.hasMoreTokens())
         {
-            if(counter == 0)
+            String token = st.nextToken();
+            if(Pattern.matches(p.pattern(), token))
             {
-                infos[0] = scanner.nextLine();
-                counter++;
+                return token;
             }
-            else if(counter == 1)
-            {
-                infos[1] = scanner.nextLine();
-                counter++;
-            }
-            else if(counter == 2)
-            {
-                String[] dimensions = scanner.nextLine().split(" ");
-                infos[2] = dimensions[0];
-                infos[3] = dimensions[1];
-                if(infos[0].equals("P2") || infos[0].equals("P3"))
-                {
-                    counter = 2137;
-                }
-                else counter++;
-            }
-            else if(counter == 2137)
-            {
-                infos[4] = scanner.nextLine();
-                counter = 3;
-            }
-            else if(counter == 3)
-            {
-                while(scanner.hasNextLine())
-                {
-                    infos[5] += scanner.nextLine() + " ";
-                }
-            }
+            else throw new Exception("Wrong token!");
         }
-        return infos;
+        else throw new Exception("End of file!");
     }
 
-    private int[][] createPixelsMatrix(String input)
+    private void tokenize(String str) throws Exception
     {
-        String[] pixels = input.replaceAll("\\s{2,}", " ").trim().split(" ");
-        int counter = 0;
-        int[][] matrix = new int[this.x][this.y];
-        for(int i = 0; i < this.y; i++)
+        str = str.replaceAll("#(.+)\n", "");
+        Pattern imageType = Pattern.compile("([Pp])[0-9]+");
+        Pattern number = Pattern.compile("[0-9]+");
+        StringTokenizer st = new StringTokenizer(str);
+        this.imageType = nextToken(st, imageType);
+        this.x = Integer.parseInt(nextToken(st, number));
+        this.y = Integer.parseInt(nextToken(st, number));
+        if(!this.imageType.equals("P1"))
         {
-            for(int j = 0; j < this.x; j++)
+            this.maxPixelValue = Integer.parseInt(nextToken(st, number));
+        }
+        else this.maxPixelValue = 1;
+        this.pixels = new int[this.y][this.x];
+        for(int y = 0; y < this.y; y++)
+        {
+            for(int x = 0; x < this.x; x++)
             {
-                matrix[i][j] = Integer.parseInt(pixels[counter]);
-                counter++;
+                pixels[y][x] = Integer.parseInt(nextToken(st, number));
             }
         }
-        return matrix;
     }
 
     public void printImageProperties()
     {
-        System.out.println("file: " + fileName + fileExtension);
-        System.out.println("image type: " + imageType);
-        System.out.println("comment: " + comment);
-        System.out.println("x: " + x + ", y: " + y);
-        System.out.println("max pixel value: " + maxPixelValue);
-//        for(int i = 0; i < this.y; i++)
-//        {
-//            for(int j = 0; j < this.x; j++)
-//            {
-//                System.out.print(pixels[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
+        System.out.println("File: " + fileName + fileExtension);
+        System.out.println("Image type: " + imageType);
+        System.out.println("X: " + x + ", Y: " + y);
+        System.out.println("Max pixel value: " + maxPixelValue);
     }
 }

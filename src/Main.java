@@ -2,14 +2,11 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         Image img = new Image("baboon.pgm");
         img.printImageProperties();
-        int[] arr = {0, 0, 0,
-                     0, 1, 0,
-                     0, 0, 0};
-        Filter filter = new Filter(arr);
+        //possible filters: IDENTITY, LIGHT_OUTLINE, OUTLINE, STRONG_OUTLINE, SHARPEN, BLUR, EMBOSS
+        Filter filter = new Filter(Filter.filterType.SHARPEN);
         ConvolutionFiltering cf1 = new ConvolutionFiltering(img, filter);
         cf1.filter();
     }

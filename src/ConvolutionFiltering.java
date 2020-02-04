@@ -12,28 +12,28 @@ public class ConvolutionFiltering {
     {
         this.img = i;
         this.filter = f;
-        this.filteredImage = new int[i.x][i.y];
+        this.filteredImage = new int[i.y][i.x];
     }
 
     private void corners()
     {
         int [][] upperLeft = {{0, 0, 0,},
-                             {0, img.pixels[0][0], img.pixels[0][1]},
-                             {0, img.pixels[1][0], img.pixels[1][1]}};
+                              {0, img.pixels[0][0], img.pixels[0][1]},
+                              {0, img.pixels[1][0], img.pixels[1][1]}};
         int [][] upperRight = {{0, 0, 0,},
-                              {img.pixels[0][img.x - 2], img.pixels[0][img.x - 1], 0},
-                              {img.pixels[1][img.x - 2], img.pixels[1][img.x - 1], 0}};
+                               {img.pixels[0][img.x - 2], img.pixels[0][img.x - 1], 0},
+                               {img.pixels[1][img.x - 2], img.pixels[1][img.x - 1], 0}};
         int [][] bottomLeft = {{0, img.pixels[img.y - 2][0], img.pixels[img.y - 2][1]},
-                              {0, img.pixels[img.y - 1][0], img.pixels[img.y - 1][1]},
-                              {0, 0, 0}};
+                               {0, img.pixels[img.y - 1][0], img.pixels[img.y - 1][1]},
+                               {0, 0, 0}};
         int [][] bottomRight = {{img.pixels[img.y - 2][img.x - 2], img.pixels[img.y - 2][img.x - 1], 0},
                                 {img.pixels[img.y - 1][img.x - 2], img.pixels[img.y - 1][img.x - 1], 0},
                                 {0, 0, 0}};
 
         filteredImage[0][0] = getNewValue(upperLeft);
-        filteredImage[img.x - 1][0] = getNewValue(upperRight);
-        filteredImage[0][img.y - 1] = getNewValue(bottomLeft);
-        filteredImage[img.x - 1][img.y - 1] = getNewValue(bottomRight);
+        filteredImage[img.y - 1][0] = getNewValue(upperRight);
+        filteredImage[0][img.x - 1] = getNewValue(bottomLeft);
+        filteredImage[img.y - 1][img.x - 1] = getNewValue(bottomRight);
     }
 
     private void sides()
@@ -54,27 +54,27 @@ public class ConvolutionFiltering {
                     {img.pixels[y][x - 1], img.pixels[y][x], img.pixels[y][x + 1]},
                     {img.pixels[y + 1][x - 1], img.pixels[y + 1][x], img.pixels[y + 1][x + 1]}};
 
-            filteredImage[x][y] = getNewValue(topSide);
+            filteredImage[y][x] = getNewValue(topSide);
         }
 
         for(int y = 1; y < img.y - 1; y++)
         {
             int x = img.x - 1;
             int[][] rightSide = {{img.pixels[y - 1][x - 1], img.pixels[y - 1][x], 0},
-                                 {img.pixels[y][x - 1], img.pixels[y][x], 0},
+                                 {img.pixels[y][x - 1],     img.pixels[y][x],     0},
                                  {img.pixels[y + 1][x - 1], img.pixels[y + 1][x], 0}};
 
-            filteredImage[x][y] = getNewValue(rightSide);
+            filteredImage[y][x] = getNewValue(rightSide);
         }
 
         for(int x = 1; x < img.x - 1; x++)
         {
             int y = img.y - 1;
             int[][] botSide = {{img.pixels[y - 1][x - 1], img.pixels[y - 1][x], img.pixels[y - 1][x + 1]},
-                    {img.pixels[y][x - 1], img.pixels[y][x], img.pixels[y][x + 1]},
-                    {0, 0, 0}};
+                               {img.pixels[y][x - 1], img.pixels[y][x], img.pixels[y][x + 1]},
+                               {0, 0, 0}};
 
-            filteredImage[x][y] = getNewValue(botSide);
+            filteredImage[y][x] = getNewValue(botSide);
         }
     }
 
@@ -82,7 +82,7 @@ public class ConvolutionFiltering {
     {
         return new int[][]{{img.pixels[y - 1][x - 1], img.pixels[y - 1][x], img.pixels[y - 1][x + 1]},
                           {img.pixels[y][x - 1], img.pixels[y][x], img.pixels[y][x + 1]},
-                          {img.pixels[y + 1][x - 1], img.pixels[y + 1][x], img.pixels[x + 1][x + 1]}};
+                          {img.pixels[y + 1][x - 1], img.pixels[y + 1][x], img.pixels[y + 1][x + 1]}};
     }
 
     private int getNewValue(int[][] arr)
@@ -92,18 +92,17 @@ public class ConvolutionFiltering {
         {
             for(int j = 0; j < 3; j++)
             {
-                value += filter.filter[i][j] * arr[i][j];
+                double f = filter.filter[i][j];
+                int a = arr[i][j];
+                int acc = (int)(f * a);
+                value += acc;
             }
         }
-        if(img.maxPixelValue != 0 && value > img.maxPixelValue)
+        if(img.maxPixelValue != 1 && value > img.maxPixelValue)
         {
             return img.maxPixelValue;
         }
-        else if(value < 0)
-        {
-            return 0;
-        }
-        else return value;
+        else return Math.max(value, 0);
     }
 
     public void filter() throws FileNotFoundException, UnsupportedEncodingException
@@ -111,28 +110,14 @@ public class ConvolutionFiltering {
         System.out.println();
         corners();
         sides();
-        for (int i = 1; i < img.y - 2; i++)
+        for (int y = 1; y < img.y - 2; y++)
         {
-            for(int j = 1; j < img.x - 2; j++)
+            for(int x = 1; x < img.x - 1; x++)
             {
-                filteredImage[j][i] = getNewValue(getSquare(j, i));
+                filteredImage[y][x] = getNewValue(getSquare(x, y));
             }
         }
-        //printResult();
         saveImage();
-    }
-
-    private void printResult()
-    {
-        System.out.println("Result of filtering:");
-        for(int i = 0; i < img.y; i++)
-        {
-            for(int j = 0; j < img.x; j++)
-            {
-                System.out.print(filteredImage[j][i] + " ");
-            }
-            System.out.println();
-        }
     }
 
     private void saveImage() throws FileNotFoundException, UnsupportedEncodingException
@@ -145,11 +130,11 @@ public class ConvolutionFiltering {
         {
             writer.println(img.maxPixelValue);
         }
-        for(int i = 0; i < img.y; i++)
+        for(int y = 0; y < img.y; y++)
         {
-            for(int j = 0; j < img.x; j++)
+            for(int x = 0; x < img.x; x++)
             {
-                writer.print(filteredImage[j][i] + " ");
+                writer.print(filteredImage[y][x] + " ");
             }
             writer.println();
         }
