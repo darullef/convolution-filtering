@@ -59,19 +59,19 @@ public class ConvolutionFiltering {
 
         for(int y = 1; y < img.y - 1; y++)
         {
-            int x = img.x - 2;
-            int[][] rightSide = {{img.pixels[y - 1][x], img.pixels[y - 1][x + 1], 0},
-                    {img.pixels[y][x], img.pixels[y][x + 1], 0},
-                    {img.pixels[y + 1][x], img.pixels[y + 1][x + 1], 0}};
+            int x = img.x - 1;
+            int[][] rightSide = {{img.pixels[y - 1][x - 1], img.pixels[y - 1][x], 0},
+                                 {img.pixels[y][x - 1], img.pixels[y][x], 0},
+                                 {img.pixels[y + 1][x - 1], img.pixels[y + 1][x], 0}};
 
             filteredImage[x][y] = getNewValue(rightSide);
         }
 
         for(int x = 1; x < img.x - 1; x++)
         {
-            int y = img.y - 2;
-            int[][] botSide = {{img.pixels[y][x - 1], img.pixels[y][x], img.pixels[y][x + 1]},
-                    {img.pixels[y + 1][x - 1], img.pixels[y + 1][x], img.pixels[y + 1][x + 1]},
+            int y = img.y - 1;
+            int[][] botSide = {{img.pixels[y - 1][x - 1], img.pixels[y - 1][x], img.pixels[y - 1][x + 1]},
+                    {img.pixels[y][x - 1], img.pixels[y][x], img.pixels[y][x + 1]},
                     {0, 0, 0}};
 
             filteredImage[x][y] = getNewValue(botSide);
@@ -98,6 +98,10 @@ public class ConvolutionFiltering {
         if(img.maxPixelValue != 0 && value > img.maxPixelValue)
         {
             return img.maxPixelValue;
+        }
+        else if(value < 0)
+        {
+            return 0;
         }
         else return value;
     }
@@ -137,6 +141,10 @@ public class ConvolutionFiltering {
         writer.println(img.imageType);
         writer.println("# Filtered image");
         writer.println(img.x + " " + img.y);
+        if(!img.imageType.equals("P1"))
+        {
+            writer.println(img.maxPixelValue);
+        }
         for(int i = 0; i < img.y; i++)
         {
             for(int j = 0; j < img.x; j++)

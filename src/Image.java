@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,12 +102,14 @@ public class Image {
     private int[][] createPixelsMatrix(String input)
     {
         String[] pixels = input.replaceAll("\\s{2,}", " ").trim().split(" ");
-        int[][] matrix = new int[this.y][this.x];
+        int counter = 0;
+        int[][] matrix = new int[this.x][this.y];
         for(int i = 0; i < this.y; i++)
         {
             for(int j = 0; j < this.x; j++)
             {
-                matrix[i][j] = Integer.parseInt(pixels[j + i * this.x]);
+                matrix[i][j] = Integer.parseInt(pixels[counter]);
+                counter++;
             }
         }
         return matrix;
@@ -122,13 +122,13 @@ public class Image {
         System.out.println("comment: " + comment);
         System.out.println("x: " + x + ", y: " + y);
         System.out.println("max pixel value: " + maxPixelValue);
-        for(int i = 0; i < this.y; i++)
-        {
-            for(int j = 0; j < this.x; j++)
-            {
-                System.out.print(pixels[i][j] + " ");
-            }
-            System.out.println();
-        }
+//        for(int i = 0; i < this.y; i++)
+//        {
+//            for(int j = 0; j < this.x; j++)
+//            {
+//                System.out.print(pixels[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
     }
 }
