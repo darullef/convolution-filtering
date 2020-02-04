@@ -1,3 +1,3 @@
 # convolution-filtering
 
-Simple implementation of convolution filtering for .pbm files.
+Simple implementation of convolution filtering for .pbm and .pgm files.
